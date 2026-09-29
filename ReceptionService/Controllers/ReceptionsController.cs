@@ -25,7 +25,7 @@ public class ReceptionsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpPost("{id}/accept")]
     public async Task<IActionResult> AcceptReceptionById(Guid id)
     {
         var reception = await _service.GetReceptionById(id);
