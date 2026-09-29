@@ -20,6 +20,7 @@
 
 ## Структура репозитория
 
+```
 OperateIt/
 ├── ProductService/  # сервис товаров и остатков
 │ ├── Controllers/  # REST/gRPC-эндпоинты
@@ -38,6 +39,7 @@ OperateIt/
 │ ├── Models/  # Reception
 │ ├── Protos/   # .proto-контракты
 └──── Services/
+```
 
 ## API
 
