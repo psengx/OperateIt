@@ -1,0 +1,48 @@
+﻿services:
+
+  product-postgres:
+    image: postgres:latest
+    container_name: product-postgres
+    environment:
+      POSTGRES_DB: products
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5434:5432"
+
+  product-service:
+    image: product-service
+    build:
+      context: .
+      dockerfile: ProductService/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:8080;http://+:8081  # Говорим слушать два порта
+      # Настраиваем Kestrel: 8080 -> HTTP/1, а 8081 -> строго HTTP/2 для gRPC
+      - ASPNETCORE_KESTREL__ENDPOINTS__HTTP__URL=http://+:8080
+      - ASPNETCORE_KESTREL__ENDPOINTS__HTTP__PROTOCOLS=Http1
+      - ASPNETCORE_KESTREL__ENDPOINTS__GRPC__URL=http://+:8081
+      - ASPNETCORE_KESTREL__ENDPOINTS__GRPC__PROTOCOLS=Http2
+    ports:
+      - "5001:8080"
+    depends_on:
+      - product-postgres
+    
+  reception-postgres:
+    image: postgres:latest
+    container_name: reception-postgres
+    environment:
+      POSTGRES_DB: receptions
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5436:5432"
+    
+  reception-service:
+    image: reception-service
+    build:
+      context: .
+      dockerfile: ReceptionService/Dockerfile
+    ports:
+      - "5002:8080"
+    depends_on:
+      - reception-postgres
